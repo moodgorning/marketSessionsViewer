@@ -148,7 +148,7 @@ export function TradingSessions() {
 
   return (
     <div className="w-full bg-gray-900 text-white">
-      <ReactTooltip id="market-tooltip" />
+      <ReactTooltip id="market-tooltip" place="top" effect="solid" />
       
       <div className="max-w-6xl mx-auto px-8 py-16">
         {/* Header */}
@@ -325,8 +325,8 @@ export function TradingSessions() {
                   {/* Timeline bar with Tooltip */}
                   <div
                     data-tooltip-id="market-tooltip"
-                    data-tooltip-content={`<div class="space-y-2"><div><p class="font-semibold">${market.name}</p><p class="text-gray-400 text-xs">${market.timezone}</p></div><div class="border-t border-gray-600 pt-2"><p class="text-gray-400 text-xs font-semibold mb-1">In ${timezoneName}:</p><p><span class="text-gray-400">Opens:</span> ${formatTime(localOpenTime)}</p><p><span class="text-gray-400">Closes:</span> ${formatTime(localCloseTime)}</p></div><div class="border-t border-gray-600 pt-2"><p class="text-gray-400 text-xs font-semibold mb-1">In ${market.timezone}:</p><p><span class="text-gray-400">Opens:</span> ${formatTimeInTimezone(market.openTime, market.timezone)}</p><p><span class="text-gray-400">Closes:</span> ${formatTimeInTimezone(market.closeTime, market.timezone)}</p></div></div>`}
-                    data-tooltip-html
+                    data-tooltip-content={`<div style="display: grid; gap: 8px;"><div><p style="font-weight: 600; margin: 0;">${market.name}</p><p style="color: #9ca3af; font-size: 0.75rem; margin: 0;">${market.timezone}</p></div><div style="border-top: 1px solid #4b5563; padding-top: 8px;"><p style="color: #9ca3af; font-size: 0.75rem; font-weight: 600; margin: 0 0 4px 0;">In ${timezoneName}:</p><p style="margin: 0;"><span style="color: #9ca3af;">Opens:</span> ${formatTime(localOpenTime)}</p><p style="margin: 0;"><span style="color: #9ca3af;">Closes:</span> ${formatTime(localCloseTime)}</p></div><div style="border-top: 1px solid #4b5563; padding-top: 8px;"><p style="color: #9ca3af; font-size: 0.75rem; font-weight: 600; margin: 0 0 4px 0;">In ${market.timezone}:</p><p style="margin: 0;"><span style="color: #9ca3af;">Opens:</span> ${formatTimeInTimezone(market.openTime, market.timezone)}</p><p style="margin: 0;"><span style="color: #9ca3af;">Closes:</span> ${formatTimeInTimezone(market.closeTime, market.timezone)}</p></div></div>`}
+                    data-tooltip-html="true"
                     className="flex-1 relative h-7 bg-gray-800/40 rounded border border-gray-700/40 cursor-pointer hover:bg-gray-800/60 transition-colors"
                   >
                     {barStyle.segments.map((segment, idx) => (
