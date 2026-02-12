@@ -138,7 +138,12 @@ export function TradingSessions() {
         <div className="mb-16 flex items-start justify-between">
           <div>
             <h1 className="text-5xl font-bold mb-2">Trading Sessions</h1>
-            <p className="text-gray-400 text-sm">Shown in {timezoneName}</p>
+            <div className="space-y-1">
+              <p className="text-gray-400 text-sm">Shown in {timezoneName}</p>
+              <p className="text-blue-400 text-sm font-semibold">
+                Current time: {now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+              </p>
+            </div>
           </div>
 
           {/* Help button */}
