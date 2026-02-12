@@ -10,7 +10,7 @@ export interface StockMarket {
 export const markets: StockMarket[] = [
   {
     name: 'Sydney',
-    timezone: 'AEDT',
+    timezone: 'Australia/Sydney',
     openTime: 1380, // 23:00 UTC previous day (10 AM AEDT, summer time UTC+11)
     closeTime: 300, // 05:00 AM UTC (4 PM AEDT)
     status: 'closed',
@@ -18,7 +18,7 @@ export const markets: StockMarket[] = [
   },
   {
     name: 'Shanghai',
-    timezone: 'CST',
+    timezone: 'Asia/Shanghai',
     openTime: 90, // 01:30 AM UTC (9:30 AM CST, UTC+8)
     closeTime: 420, // 07:00 AM UTC (3 PM CST)
     status: 'closed',
@@ -26,7 +26,7 @@ export const markets: StockMarket[] = [
   },
   {
     name: 'Shenzhen',
-    timezone: 'CST',
+    timezone: 'Asia/Shanghai',
     openTime: 90, // 01:30 AM UTC (9:30 AM CST, UTC+8)
     closeTime: 420, // 07:00 AM UTC (3 PM CST)
     status: 'closed',
@@ -34,7 +34,7 @@ export const markets: StockMarket[] = [
   },
   {
     name: 'Hong Kong',
-    timezone: 'HKT',
+    timezone: 'Asia/Hong_Kong',
     openTime: 90, // 01:30 AM UTC (9:30 AM HKT, UTC+8)
     closeTime: 480, // 08:00 AM UTC (4 PM HKT)
     status: 'closed',
@@ -42,7 +42,7 @@ export const markets: StockMarket[] = [
   },
   {
     name: 'Tokyo',
-    timezone: 'JST',
+    timezone: 'Asia/Tokyo',
     openTime: 0, // 00:00 UTC (9 AM JST, UTC+9)
     closeTime: 360, // 06:00 AM UTC (3 PM JST)
     status: 'closed',
@@ -50,7 +50,7 @@ export const markets: StockMarket[] = [
   },
   {
     name: 'Frankfurt',
-    timezone: 'CET',
+    timezone: 'Europe/Berlin',
     openTime: 420, // 07:00 AM UTC (8 AM CET/CEST, UTC+1/+2)
     closeTime: 1020, // 17:00 UTC (6 PM CET/CEST)
     status: 'open',
@@ -58,7 +58,7 @@ export const markets: StockMarket[] = [
   },
   {
     name: 'London',
-    timezone: 'GMT',
+    timezone: 'Europe/London',
     openTime: 480, // 08:00 AM UTC (8 AM GMT/BST, UTC+0/+1)
     closeTime: 990, // 16:30 UTC (4:30 PM GMT/BST)
     status: 'open',
@@ -66,7 +66,7 @@ export const markets: StockMarket[] = [
   },
   {
     name: 'New York',
-    timezone: 'EST',
+    timezone: 'America/New_York',
     openTime: 870, // 14:30 UTC (9:30 AM EST, UTC-5) or 13:30 UTC (EDT, UTC-4)
     closeTime: 1260, // 21:00 UTC (4 PM EST) or 20:00 UTC (EDT)
     status: 'open',
@@ -74,7 +74,7 @@ export const markets: StockMarket[] = [
   },
   {
     name: 'CME',
-    timezone: 'EST',
+    timezone: 'America/Chicago',
     openTime: 1320, // 22:00 UTC (5 PM EST, UTC-5) or 21:00 UTC (EDT, UTC-4)
     closeTime: 1260, // 21:00 UTC next day (4 PM EST) - spans midnight
     status: 'open',

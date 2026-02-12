@@ -38,9 +38,20 @@ export function TradingSessions() {
   const currentMinutesUTC = now.getUTCHours() * 60 + now.getUTCMinutes() + now.getUTCSeconds() / 60;
   const currentPercentage = (currentMinutesLocal / (24 * 60)) * 100;
 
-  // Check if it's a weekend (Saturday = 6, Sunday = 0)
-  const dayOfWeek = now.getDay();
-  const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+  // Helper function to check if a specific market is in weekend using its timezone
+  const isMarketWeekend = (marketTimezone: string) => {
+    try {
+      const formatter = new Intl.DateTimeFormat('en-US', {
+        weekday: 'short',
+        timeZone: marketTimezone,
+      });
+      const dayName = formatter.format(now);
+      return dayName === 'Sat' || dayName === 'Sun';
+    } catch {
+      // If timezone conversion fails, assume it's not a weekend
+      return false;
+    }
+  };
 
   // Get local timezone name
   const timezoneName = useMemo(() => {
@@ -99,9 +110,6 @@ export function TradingSessions() {
         <div className="mb-16">
           <h1 className="text-5xl font-bold mb-2">Trading Sessions</h1>
           <p className="text-gray-400 text-sm">Shown in {timezoneName}</p>
-          {isWeekend && (
-            <p className="text-orange-400 text-sm mt-2">Markets are closed on weekends</p>
-          )}
         </div>
 
         {/* Timeline Container */}
@@ -133,8 +141,8 @@ export function TradingSessions() {
               .map(({ market }) => {
               let status = getMarketStatus(market, currentMinutesUTC);
 
-              // Override status if it's a weekend
-              if (isWeekend) {
+              // Override status if it's a weekend in that market's timezone
+              if (isMarketWeekend(market.timezone)) {
                 status = 'closed';
               }
 
