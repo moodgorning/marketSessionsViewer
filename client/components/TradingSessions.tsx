@@ -1,11 +1,7 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { markets, getMarketStatus } from '@/data/markets';
 import { isPublicHoliday } from '@/data/holidays';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
 import {
   Dialog,
   DialogContent,
@@ -47,9 +43,29 @@ const formatTimeInTimezone = (utcMinutes: number, timezone: string): string => {
   }
 };
 
+interface TooltipState {
+  visible: boolean;
+  x: number;
+  y: number;
+  marketName: string;
+  timezone: string;
+  localOpenTime: number;
+  localCloseTime: number;
+}
+
 export function TradingSessions() {
   const [now, setNow] = useState(new Date());
   const [helpOpen, setHelpOpen] = useState(false);
+  const [tooltip, setTooltip] = useState<TooltipState>({
+    visible: false,
+    x: 0,
+    y: 0,
+    marketName: '',
+    timezone: '',
+    localOpenTime: 0,
+    localCloseTime: 0,
+  });
+  const tooltipTimeoutRef = useRef<NodeJS.Timeout>();
 
   // Update time every second
   useEffect(() => {
@@ -59,6 +75,42 @@ export function TradingSessions() {
 
     return () => clearInterval(interval);
   }, []);
+
+  const handleMarketMouseEnter = (
+    event: React.MouseEvent,
+    market: any,
+    localOpenTime: number,
+    localCloseTime: number
+  ) => {
+    // Clear any pending hide
+    if (tooltipTimeoutRef.current) {
+      clearTimeout(tooltipTimeoutRef.current);
+    }
+
+    setTooltip({
+      visible: true,
+      x: event.clientX,
+      y: event.clientY,
+      marketName: market.name,
+      timezone: market.timezone,
+      localOpenTime,
+      localCloseTime,
+    });
+  };
+
+  const handleMarketMouseMove = (event: React.MouseEvent) => {
+    setTooltip((prev) => ({
+      ...prev,
+      x: event.clientX,
+      y: event.clientY,
+    }));
+  };
+
+  const handleMarketMouseLeave = () => {
+    tooltipTimeoutRef.current = setTimeout(() => {
+      setTooltip((prev) => ({ ...prev, visible: false }));
+    }, 100);
+  };
 
   const currentHourLocal = now.getHours();
   const currentMinLocal = now.getMinutes();
