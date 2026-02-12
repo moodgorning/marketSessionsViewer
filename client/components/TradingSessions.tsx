@@ -305,7 +305,7 @@ export function TradingSessions() {
               const barStyle = getBarStyle(localMarket);
 
               return (
-                <div key={market.name} className="flex items-center gap-6">
+                <div key={market.name} className="flex items-center gap-6 group relative">
                   {/* Market name column */}
                   <div className="w-24 flex-shrink-0">
                     <span className="text-sm font-semibold whitespace-nowrap">{market.name}</span>
@@ -325,7 +325,7 @@ export function TradingSessions() {
                   </div>
 
                   {/* Timeline bar */}
-                  <div className="flex-1 relative h-7 bg-gray-800/40 rounded border border-gray-700/40 cursor-pointer hover:bg-gray-800/60 transition-colors group">
+                  <div className="flex-1 relative h-7 bg-gray-800/40 rounded border border-gray-700/40 cursor-pointer hover:bg-gray-800/60 transition-colors">
                     {barStyle.segments.map((segment, idx) => (
                       <div
                         key={idx}
@@ -338,26 +338,26 @@ export function TradingSessions() {
                         }}
                       />
                     ))}
+                  </div>
 
-                    {/* Custom tooltip */}
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-gray-950 border border-gray-700 rounded-md px-3 py-2 text-sm text-white opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
-                      <div className="space-y-2">
-                        <div>
-                          <p className="font-semibold">{market.name}</p>
-                          <p className="text-gray-400 text-xs">{market.timezone}</p>
-                        </div>
+                  {/* Tooltip - positioned at row level */}
+                  <div className="absolute -top-48 left-1/2 -translate-x-1/2 bg-gray-950 border border-gray-700 rounded-md px-3 py-2 text-sm text-white opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 whitespace-nowrap">
+                    <div className="space-y-2">
+                      <div>
+                        <p className="font-semibold">{market.name}</p>
+                        <p className="text-gray-400 text-xs">{market.timezone}</p>
+                      </div>
 
-                        <div className="border-t border-gray-600 pt-2">
-                          <p className="text-gray-400 text-xs font-semibold mb-1">In {timezoneName}:</p>
-                          <p><span className="text-gray-400">Opens:</span> {formatTime(localOpenTime)}</p>
-                          <p><span className="text-gray-400">Closes:</span> {formatTime(localCloseTime)}</p>
-                        </div>
+                      <div className="border-t border-gray-600 pt-2">
+                        <p className="text-gray-400 text-xs font-semibold mb-1">In {timezoneName}:</p>
+                        <p><span className="text-gray-400">Opens:</span> {formatTime(localOpenTime)}</p>
+                        <p><span className="text-gray-400">Closes:</span> {formatTime(localCloseTime)}</p>
+                      </div>
 
-                        <div className="border-t border-gray-600 pt-2">
-                          <p className="text-gray-400 text-xs font-semibold mb-1">In {market.timezone}:</p>
-                          <p><span className="text-gray-400">Opens:</span> {formatTimeInTimezone(market.openTime, market.timezone)}</p>
-                          <p><span className="text-gray-400">Closes:</span> {formatTimeInTimezone(market.closeTime, market.timezone)}</p>
-                        </div>
+                      <div className="border-t border-gray-600 pt-2">
+                        <p className="text-gray-400 text-xs font-semibold mb-1">In {market.timezone}:</p>
+                        <p><span className="text-gray-400">Opens:</span> {formatTimeInTimezone(market.openTime, market.timezone)}</p>
+                        <p><span className="text-gray-400">Closes:</span> {formatTimeInTimezone(market.closeTime, market.timezone)}</p>
                       </div>
                     </div>
                   </div>
