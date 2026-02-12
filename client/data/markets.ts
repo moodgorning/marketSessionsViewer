@@ -72,6 +72,14 @@ export const markets: StockMarket[] = [
     status: 'open',
     color: '#60A5FA', // Blue
   },
+  {
+    name: 'CME',
+    timezone: 'EST',
+    openTime: 1320, // 22:00 UTC (5 PM EST, UTC-5) or 21:00 UTC (EDT, UTC-4)
+    closeTime: 1260, // 21:00 UTC next day (4 PM EST) - spans midnight
+    status: 'open',
+    color: '#EC4899', // Pink
+  },
 ];
 
 export function getMarketStatus(market: StockMarket, currentMinutesUTC: number): 'open' | 'closed' | 'premarket' | 'afterhours' {
