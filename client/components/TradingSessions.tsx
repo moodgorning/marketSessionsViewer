@@ -117,7 +117,13 @@ export function TradingSessions() {
 
           {/* Markets section */}
           <div className="space-y-6">
-            {markets.map((market) => {
+            {markets
+              .map(market => ({
+                market,
+                localOpenTime: convertUTCToLocal(market.openTime),
+              }))
+              .sort((a, b) => a.localOpenTime - b.localOpenTime)
+              .map(({ market }) => {
               const status = getMarketStatus(market, currentMinutesUTC);
 
               // Convert market hours to local timezone
