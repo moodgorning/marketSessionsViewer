@@ -38,6 +38,10 @@ export function TradingSessions() {
   const currentMinutesUTC = now.getUTCHours() * 60 + now.getUTCMinutes() + now.getUTCSeconds() / 60;
   const currentPercentage = (currentMinutesLocal / (24 * 60)) * 100;
 
+  // Check if it's a weekend (Saturday = 6, Sunday = 0)
+  const dayOfWeek = now.getDay();
+  const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+
   // Get local timezone name
   const timezoneName = useMemo(() => {
     try {
@@ -95,6 +99,9 @@ export function TradingSessions() {
         <div className="mb-16">
           <h1 className="text-5xl font-bold mb-2">Trading Sessions</h1>
           <p className="text-gray-400 text-sm">Shown in {timezoneName}</p>
+          {isWeekend && (
+            <p className="text-orange-400 text-sm mt-2">Markets are closed on weekends</p>
+          )}
         </div>
 
         {/* Timeline Container */}
@@ -124,7 +131,12 @@ export function TradingSessions() {
               }))
               .sort((a, b) => a.localOpenTime - b.localOpenTime)
               .map(({ market }) => {
-              const status = getMarketStatus(market, currentMinutesUTC);
+              let status = getMarketStatus(market, currentMinutesUTC);
+
+              // Override status if it's a weekend
+              if (isWeekend) {
+                status = 'closed';
+              }
 
               // Convert market hours to local timezone
               const localOpenTime = convertUTCToLocal(market.openTime);
