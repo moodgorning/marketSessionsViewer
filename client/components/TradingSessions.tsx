@@ -123,13 +123,13 @@ export function TradingSessions() {
               const barStyle = getBarStyle(localMarket);
 
               return (
-                <div key={market.name} className="flex items-start gap-8">
+                <div key={market.name} className="flex items-center gap-4">
                   {/* Market label and status */}
-                  <div className="w-28 flex-shrink-0 pt-1">
+                  <div className="w-40 flex-shrink-0">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-semibold">{market.name}</span>
+                      <span className="text-sm font-semibold whitespace-nowrap">{market.name}</span>
                       <span
-                        className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs font-semibold whitespace-nowrap ${
+                        className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs font-semibold whitespace-nowrap flex-shrink-0 ${
                           status === 'open'
                             ? 'bg-green-900/40 text-green-400'
                             : 'bg-red-900/40 text-red-400'
