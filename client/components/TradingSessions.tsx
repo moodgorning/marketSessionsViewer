@@ -47,7 +47,18 @@ export function TradingSessions() {
   const currentMinutesLocal = currentHourLocal * 60 + currentMinLocal + currentSecLocal / 60;
   const currentHourUTC = now.getUTCHours();
   const currentMinutesUTC = now.getUTCHours() * 60 + now.getUTCMinutes() + now.getUTCSeconds() / 60;
-  const currentPercentage = (currentMinutesLocal / (24 * 60)) * 100;
+
+  // Calculate position as percentage within the 24-hour day
+  const dayProgressFraction = currentMinutesLocal / (24 * 60);
+
+  // The timeline bars start at 14rem (6rem + 1.5rem + 5rem + 1.5rem)
+  // and extend to 100% of the container.
+  // So position = 14rem + dayProgressFraction * (100% - 14rem)
+  // Expressed as: 14rem + dayProgressFraction * 100% = left calculation
+  // But since we can't easily do (100% - 14rem) in calc with units, we'll use pixels/rem
+  // Position from start of timeline bars (at 14rem): dayProgressFraction * (100% - 14rem)
+  const timelineBarStartRem = 14; // 6 + 1.5 + 5 + 1.5
+  const timelineOffsetPercent = (dayProgressFraction * 100);
 
   // Helper function to check if a specific market is closed (weekend or holiday) using its timezone
   const isMarketClosed = (marketTimezone: string) => {
@@ -295,7 +306,7 @@ export function TradingSessions() {
           <div
             className="absolute w-1 bg-blue-500 pointer-events-none shadow-lg"
             style={{
-              left: `calc(6rem + 1.5rem + 5rem + 1.5rem + ${currentPercentage}%)`,
+              left: `calc(${(14 * (1 - dayProgressFraction)).toFixed(3)}rem + ${(dayProgressFraction * 100).toFixed(2)}%)`,
               top: '1rem',
               bottom: 0,
             }}
