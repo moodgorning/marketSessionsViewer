@@ -11,10 +11,34 @@ export const markets: StockMarket[] = [
   {
     name: 'Sydney',
     timezone: 'AEDT',
-    openTime: 21, // 10 PM UTC (Sydney opens at 10 AM AEDT which is 9 PM UTC previous day, but typically shown as 21 UTC same day for convenience)
-    closeTime: 6, // 6 AM UTC (Sydney closes at 4 PM AEDT which is 5 AM UTC)
+    openTime: 21, // 10 PM UTC (Sydney opens at 10 AM AEDT)
+    closeTime: 6, // 6 AM UTC (Sydney closes at 4 PM AEDT)
     status: 'closed',
     color: '#60A5FA', // Blue
+  },
+  {
+    name: 'Shanghai',
+    timezone: 'CST',
+    openTime: 1, // 1:30 AM UTC (Shanghai opens at 9:30 AM CST)
+    closeTime: 7, // 7 AM UTC (Shanghai closes at 3 PM CST)
+    status: 'closed',
+    color: '#F87171', // Red
+  },
+  {
+    name: 'Shenzhen',
+    timezone: 'CST',
+    openTime: 1, // 1:30 AM UTC (Shenzhen opens at 9:30 AM CST)
+    closeTime: 7, // 7 AM UTC (Shenzhen closes at 3 PM CST)
+    status: 'closed',
+    color: '#FB923C', // Orange
+  },
+  {
+    name: 'Hong Kong',
+    timezone: 'HKT',
+    openTime: 1, // 1:30 AM UTC (Hong Kong opens at 9:30 AM HKT)
+    closeTime: 8, // 8 AM UTC (Hong Kong closes at 4 PM HKT)
+    status: 'closed',
+    color: '#FBBF24', // Amber
   },
   {
     name: 'Tokyo',
@@ -23,6 +47,14 @@ export const markets: StockMarket[] = [
     closeTime: 6, // 6 AM UTC (Tokyo closes at 3 PM JST)
     status: 'closed',
     color: '#818CF8', // Indigo
+  },
+  {
+    name: 'Frankfurt',
+    timezone: 'CET',
+    openTime: 7, // 7 AM UTC (Frankfurt opens at 8 AM CET)
+    closeTime: 17, // 5 PM UTC (Frankfurt closes at 6 PM CET, main trading)
+    status: 'open',
+    color: '#A78BFA', // Purple
   },
   {
     name: 'London',
