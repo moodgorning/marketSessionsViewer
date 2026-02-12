@@ -1,5 +1,6 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { markets, getMarketStatus } from '@/data/markets';
+import { isPublicHoliday } from '@/data/holidays';
 import {
   Tooltip,
   TooltipContent,
@@ -38,17 +39,23 @@ export function TradingSessions() {
   const currentMinutesUTC = now.getUTCHours() * 60 + now.getUTCMinutes() + now.getUTCSeconds() / 60;
   const currentPercentage = (currentMinutesLocal / (24 * 60)) * 100;
 
-  // Helper function to check if a specific market is in weekend using its timezone
-  const isMarketWeekend = (marketTimezone: string) => {
+  // Helper function to check if a specific market is closed (weekend or holiday) using its timezone
+  const isMarketClosed = (marketTimezone: string) => {
     try {
+      // Check for weekend
       const formatter = new Intl.DateTimeFormat('en-US', {
         weekday: 'short',
         timeZone: marketTimezone,
       });
       const dayName = formatter.format(now);
-      return dayName === 'Sat' || dayName === 'Sun';
+      const isWeekend = dayName === 'Sat' || dayName === 'Sun';
+
+      // Check for public holiday
+      const isHoliday = isPublicHoliday(marketTimezone, now);
+
+      return isWeekend || isHoliday;
     } catch {
-      // If timezone conversion fails, assume it's not a weekend
+      // If timezone conversion fails, assume it's not closed
       return false;
     }
   };
@@ -141,8 +148,8 @@ export function TradingSessions() {
               .map(({ market }) => {
               let status = getMarketStatus(market, currentMinutesUTC);
 
-              // Override status if it's a weekend in that market's timezone
-              if (isMarketWeekend(market.timezone)) {
+              // Override status if it's a weekend or public holiday in that market's timezone
+              if (isMarketClosed(market.timezone)) {
                 status = 'closed';
               }
 
