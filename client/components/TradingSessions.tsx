@@ -133,10 +133,10 @@ export function TradingSessions() {
           {/* Markets section */}
           <div className="space-y-6">
             {markets
-              .map(market => ({
-                market,
-                localOpenTime: convertUTCToLocal(market.openTime),
-              }))
+              .map(market => {
+                const localOpenTime = convertUTCToLocal(market.openTime);
+                return { market, localOpenTime };
+              })
               .sort((a, b) => a.localOpenTime - b.localOpenTime)
               .map(({ market }) => {
               let status = getMarketStatus(market, currentMinutesUTC);
