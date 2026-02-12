@@ -28,6 +28,25 @@ const formatTime = (minutes: number): string => {
   return `${displayHour}:${mins.toString().padStart(2, '0')} ${period}`;
 };
 
+// Format UTC minutes in a specific timezone
+const formatTimeInTimezone = (utcMinutes: number, timezone: string): string => {
+  try {
+    // Create a date at midnight UTC, then add the minutes
+    const date = new Date('2024-01-01T00:00:00Z');
+    date.setUTCMinutes(date.getUTCMinutes() + utcMinutes);
+
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+      timeZone: timezone,
+    });
+    return formatter.format(date);
+  } catch {
+    return formatTime(utcMinutes);
+  }
+};
+
 export function TradingSessions() {
   const [now, setNow] = useState(new Date());
   const [helpOpen, setHelpOpen] = useState(false);
@@ -324,12 +343,22 @@ export function TradingSessions() {
                       </div>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <div className="text-sm space-y-1">
-                        <p className="font-semibold">{market.name}</p>
-                        <p className="text-gray-300">{market.timezone}</p>
-                        <div className="border-t border-gray-500 pt-1 mt-1">
+                      <div className="text-sm space-y-2">
+                        <div>
+                          <p className="font-semibold">{market.name}</p>
+                          <p className="text-gray-400 text-xs">{market.timezone}</p>
+                        </div>
+
+                        <div className="border-t border-gray-600 pt-2">
+                          <p className="text-gray-400 text-xs font-semibold mb-1">In {timezoneName}:</p>
                           <p><span className="text-gray-400">Opens:</span> {formatTime(localOpenTime)}</p>
                           <p><span className="text-gray-400">Closes:</span> {formatTime(localCloseTime)}</p>
+                        </div>
+
+                        <div className="border-t border-gray-600 pt-2">
+                          <p className="text-gray-400 text-xs font-semibold mb-1">In {market.timezone}:</p>
+                          <p><span className="text-gray-400">Opens:</span> {formatTimeInTimezone(market.openTime, market.timezone)}</p>
+                          <p><span className="text-gray-400">Closes:</span> {formatTimeInTimezone(market.closeTime, market.timezone)}</p>
                         </div>
                       </div>
                     </TooltipContent>
