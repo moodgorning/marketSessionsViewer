@@ -21,6 +21,17 @@ export function TradingSessions() {
   // Get current UTC hour for market status checking
   const currentHourUTC = useMemo(() => now.getUTCHours(), []);
 
+  // Calculate timezone offset in hours
+  const timezoneOffsetHours = useMemo(() => {
+    const utcDate = new Date(now.getTime() + now.getTimezoneOffset() * 60 * 1000);
+    return Math.round((now.getTime() - utcDate.getTime()) / (1000 * 60 * 60));
+  }, []);
+
+  // Convert UTC hours to local timezone
+  const convertUTCToLocal = (utcHour: number) => {
+    return (utcHour + timezoneOffsetHours + 24) % 24;
+  };
+
   const getBarStyle = (market: any) => {
     const hourWidth = 100 / 24;
 
@@ -85,7 +96,13 @@ export function TradingSessions() {
           <div className="space-y-6 relative">
             {markets.map((market) => {
               const status = getMarketStatus(market, currentHourUTC);
-              const barStyle = getBarStyle(market);
+
+              // Convert market hours to local timezone
+              const localOpenTime = convertUTCToLocal(market.openTime);
+              const localCloseTime = convertUTCToLocal(market.closeTime);
+              const localMarket = { ...market, openTime: localOpenTime, closeTime: localCloseTime };
+
+              const barStyle = getBarStyle(localMarket);
 
               return (
                 <div key={market.name} className="flex items-start gap-8">
