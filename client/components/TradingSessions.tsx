@@ -324,9 +324,13 @@ export function TradingSessions() {
                       </div>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <div className="text-sm">
-                        <p className="font-semibold">{market.name} {market.timezone}</p>
-                        <p>{formatTime(localOpenTime)} - {formatTime(localCloseTime)}</p>
+                      <div className="text-sm space-y-1">
+                        <p className="font-semibold">{market.name}</p>
+                        <p className="text-gray-300">{market.timezone}</p>
+                        <div className="border-t border-gray-500 pt-1 mt-1">
+                          <p><span className="text-gray-400">Opens:</span> {formatTime(localOpenTime)}</p>
+                          <p><span className="text-gray-400">Closes:</span> {formatTime(localCloseTime)}</p>
+                        </div>
                       </div>
                     </TooltipContent>
                   </Tooltip>
