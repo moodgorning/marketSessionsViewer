@@ -202,8 +202,8 @@ export function TradingSessions() {
 
         {/* Timeline Container */}
         <div className="relative">
-          {/* Hour labels */}
-          <div className="flex text-xs font-semibold text-gray-400 mb-6 ml-32">
+          {/* Hour labels - aligned with timeline bar start (w-24 + gap-6 + w-20 + gap-6 = 14rem) */}
+          <div className="flex text-xs font-semibold text-gray-400 mb-6" style={{ marginLeft: 'calc(6rem + 1.5rem + 5rem + 1.5rem)' }}>
             {hours.map((hour) => {
               const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
               const period = hour < 12 ? 'AM' : 'PM';
@@ -291,11 +291,11 @@ export function TradingSessions() {
             })}
           </div>
 
-          {/* Current time indicator line - positioned outside markets container */}
+          {/* Current time indicator line - aligned with timeline bars (starts at w-24 + gap-6 + w-20 + gap-6 = 14rem) */}
           <div
             className="absolute w-1 bg-blue-500 pointer-events-none shadow-lg"
             style={{
-              left: `calc(14rem + ${currentPercentage}%)`,
+              left: `calc(6rem + 1.5rem + 5rem + 1.5rem + ${currentPercentage}%)`,
               top: '1rem',
               bottom: 0,
             }}
