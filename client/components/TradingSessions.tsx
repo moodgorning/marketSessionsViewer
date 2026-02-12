@@ -215,13 +215,14 @@ export function TradingSessions() {
         <div className="relative">
           {/* Hour labels - aligned with timeline bar start (w-24 + gap-6 + w-20 + gap-6 = 14rem) */}
           <div className="flex text-xs font-semibold text-gray-400 mb-6" style={{ marginLeft: 'calc(6rem + 1.5rem + 5rem + 1.5rem)' }}>
-            {hours.map((hour) => {
+            {hours.filter(hour => hour % 3 === 0).map((hour) => {
               const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
               const period = hour < 12 ? 'AM' : 'PM';
               return (
                 <div
                   key={`label-${hour}`}
-                  className="flex-1 text-center"
+                  style={{ flex: `0 0 calc(${100 / 8}%)` }}
+                  className="text-center"
                 >
                   {displayHour} {period}
                 </div>
@@ -230,7 +231,21 @@ export function TradingSessions() {
           </div>
 
           {/* Markets section */}
-          <div className="space-y-6">
+          <div className="space-y-6 relative">
+            {/* Vertical separator lines at 3-hour intervals (every 12.5%) */}
+            {hours.filter(hour => hour % 3 === 0 && hour !== 0).map((hour) => {
+              const hourPercentage = (hour / 24) * 100;
+              return (
+                <div
+                  key={`vline-${hour}`}
+                  className="absolute top-0 bottom-0 w-px bg-gray-700/40 pointer-events-none"
+                  style={{
+                    left: `calc(6rem + 1.5rem + 5rem + 1.5rem + ${hourPercentage}%)`,
+                  }}
+                />
+              );
+            })}
+
             {markets
               .map(market => {
                 const localOpenTime = convertUTCToLocal(market.openTime);
