@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { markets, getMarketStatus } from '@/data/markets';
 import {
   Tooltip,
@@ -16,11 +16,22 @@ const formatTime = (hour: number): string => {
 };
 
 export function TradingSessions() {
-  const now = new Date();
+  const [now, setNow] = useState(new Date());
+
+  // Update time every second
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNow(new Date());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   const currentHourLocal = now.getHours();
   const currentMinLocal = now.getMinutes();
+  const currentSecLocal = now.getSeconds();
   const currentHourUTC = now.getUTCHours();
-  const currentPercentage = ((currentHourLocal * 60 + currentMinLocal) / (24 * 60)) * 100;
+  const currentPercentage = ((currentHourLocal * 60 * 60 + currentMinLocal * 60 + currentSecLocal) / (24 * 60 * 60)) * 100;
 
   // Get local timezone name
   const timezoneName = useMemo(() => {
@@ -160,9 +171,11 @@ export function TradingSessions() {
 
             {/* Current time indicator line */}
             <div
-              className="absolute top-0 bottom-0 w-1 bg-blue-500 pointer-events-none shadow-lg"
+              className="absolute w-1 bg-blue-500 pointer-events-none shadow-lg"
               style={{
-                left: `calc(7rem + ${currentPercentage * 100 / 100}%)`,
+                left: `calc(7rem + ${currentPercentage}%)`,
+                top: 0,
+                height: '100%',
               }}
             />
           </div>
