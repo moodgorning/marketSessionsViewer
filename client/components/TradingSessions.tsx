@@ -212,13 +212,13 @@ export function TradingSessions() {
         </Dialog>
 
         {/* Timeline Container */}
-        <div className="relative overflow-hidden">
+        <div className="relative">
           {/* Hour labels - absolutely positioned over timeline (same as vertical lines) */}
           <div className="mb-6 h-6">
-            {hours.filter(hour => hour % 3 === 0).map((hour, index) => {
+            {hours.filter(hour => hour % 3 === 0).map((hour) => {
               const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
               const period = hour < 12 ? 'AM' : 'PM';
-              const percentageOfTimeline = (index / 8) * 100;
+              const percentageOfTimeline = (hour / 24) * 100;
               return (
                 <div
                   key={`label-${hour}`}
@@ -235,13 +235,13 @@ export function TradingSessions() {
 
           {/* Markets section */}
           <div className="space-y-6 relative">
-            {/* Vertical separator lines at 3-hour boundaries (every 12.5%) */}
-            {[0, 1, 2, 3, 4, 5, 6, 7].map((index) => {
-              const percentageOfTimeline = (index / 8) * 100;
+            {/* Vertical separator lines at 3-hour boundaries */}
+            {[0, 3, 6, 9, 12, 15, 18, 21].map((hour) => {
+              const percentageOfTimeline = (hour / 24) * 100;
               // Position: left columns (14rem) + percentage of timeline
               return (
                 <div
-                  key={`vline-${index}`}
+                  key={`vline-${hour}`}
                   className="absolute top-0 bottom-0 w-px bg-gray-700/40 pointer-events-none"
                   style={{
                     left: `calc(6rem + 1.5rem + 5rem + 1.5rem + ${percentageOfTimeline}%)`,
