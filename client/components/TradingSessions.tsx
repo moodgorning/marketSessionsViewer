@@ -123,21 +123,23 @@ export function TradingSessions() {
               const barStyle = getBarStyle(localMarket);
 
               return (
-                <div key={market.name} className="flex items-center gap-4">
-                  {/* Market label and status */}
-                  <div className="w-40 flex-shrink-0">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-semibold whitespace-nowrap">{market.name}</span>
-                      <span
-                        className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs font-semibold whitespace-nowrap flex-shrink-0 ${
-                          status === 'open'
-                            ? 'bg-green-900/40 text-green-400'
-                            : 'bg-red-900/40 text-red-400'
-                        }`}
-                      >
-                        {status === 'open' ? 'Open' : 'Closed'}
-                      </span>
-                    </div>
+                <div key={market.name} className="flex items-center gap-6">
+                  {/* Market name column */}
+                  <div className="w-24 flex-shrink-0">
+                    <span className="text-sm font-semibold whitespace-nowrap">{market.name}</span>
+                  </div>
+
+                  {/* Status badge column */}
+                  <div className="w-20 flex-shrink-0">
+                    <span
+                      className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs font-semibold whitespace-nowrap ${
+                        status === 'open'
+                          ? 'bg-green-900/40 text-green-400'
+                          : 'bg-red-900/40 text-red-400'
+                      }`}
+                    >
+                      {status === 'open' ? 'Open' : 'Closed'}
+                    </span>
                   </div>
 
                   {/* Timeline bar */}
