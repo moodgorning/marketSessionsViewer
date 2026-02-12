@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import { Tooltip } from 'react-tooltip';
+import { Tooltip as ReactTooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 import { markets, getMarketStatus } from '@/data/markets';
 import { isPublicHoliday } from '@/data/holidays';
@@ -149,7 +149,7 @@ export function TradingSessions() {
 
   return (
     <div className="w-full bg-gray-900 text-white">
-      <Tooltip id="market-tooltip" className="bg-gray-950 border border-gray-700 text-white text-sm z-50" />
+      <ReactTooltip id="market-tooltip" />
       
       <div className="max-w-6xl mx-auto px-8 py-16">
         {/* Header */}
