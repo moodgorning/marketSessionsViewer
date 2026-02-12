@@ -111,7 +111,7 @@ export function TradingSessions() {
           </div>
 
           {/* Markets section */}
-          <div className="space-y-6 relative">
+          <div className="space-y-6">
             {markets.map((market) => {
               const status = getMarketStatus(market, currentHourUTC);
 
@@ -168,17 +168,17 @@ export function TradingSessions() {
                 </div>
               );
             })}
-
-            {/* Current time indicator line */}
-            <div
-              className="absolute w-1 bg-blue-500 pointer-events-none shadow-lg"
-              style={{
-                left: `calc(7rem + ${currentPercentage}%)`,
-                top: 0,
-                height: '100%',
-              }}
-            />
           </div>
+
+          {/* Current time indicator line - positioned outside markets container */}
+          <div
+            className="absolute w-1 bg-blue-500 pointer-events-none shadow-lg"
+            style={{
+              left: `calc(7rem + ${currentPercentage}%)`,
+              top: '6.5rem',
+              bottom: 0,
+            }}
+          />
         </div>
       </div>
     </div>
