@@ -6,6 +6,15 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { HelpCircle } from 'lucide-react';
 
 const hours = Array.from({ length: 24 }, (_, i) => i);
 
@@ -21,6 +30,7 @@ const formatTime = (minutes: number): string => {
 
 export function TradingSessions() {
   const [now, setNow] = useState(new Date());
+  const [helpOpen, setHelpOpen] = useState(false);
 
   // Update time every second
   useEffect(() => {
@@ -114,10 +124,81 @@ export function TradingSessions() {
     <div className="w-full bg-gray-900 text-white">
       <div className="max-w-6xl mx-auto px-8 py-16">
         {/* Header */}
-        <div className="mb-16">
-          <h1 className="text-5xl font-bold mb-2">Trading Sessions</h1>
-          <p className="text-gray-400 text-sm">Shown in {timezoneName}</p>
+        <div className="mb-16 flex items-start justify-between">
+          <div>
+            <h1 className="text-5xl font-bold mb-2">Trading Sessions</h1>
+            <p className="text-gray-400 text-sm">Shown in {timezoneName}</p>
+          </div>
+
+          {/* Help button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setHelpOpen(true)}
+            className="text-gray-400 hover:text-white hover:bg-gray-800"
+            title="Help"
+          >
+            <HelpCircle className="h-6 w-6" />
+          </Button>
         </div>
+
+        {/* Help Modal */}
+        <Dialog open={helpOpen} onOpenChange={setHelpOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Market Session Viewer - Help</DialogTitle>
+              <DialogDescription>Learn how to use this tool</DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 text-sm text-gray-300">
+              <div>
+                <h3 className="font-semibold text-white mb-2">What is this?</h3>
+                <p>
+                  The Market Session Viewer displays the trading hours of major stock exchanges around the world on a 24-hour timeline. Each colored bar represents when that exchange is open for trading.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-white mb-2">Reading the Timeline</h3>
+                <ul className="list-disc list-inside space-y-1">
+                  <li><strong>Blue vertical line:</strong> Current time in your timezone, updated every second</li>
+                  <li><strong>Colored bars:</strong> Trading hours for each exchange</li>
+                  <li><strong>Hour labels:</strong> 24-hour clock showing times in your timezone</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-white mb-2">Status Indicators</h3>
+                <ul className="list-disc list-inside space-y-1">
+                  <li><strong>Green "Open":</strong> Exchange is currently trading</li>
+                  <li><strong>Red "Closed":</strong> Exchange is closed</li>
+                  <li>Markets are closed on weekends and public holidays</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-white mb-2">Interactive Features</h3>
+                <ul className="list-disc list-inside space-y-1">
+                  <li><strong>Hover over any bar:</strong> See exact opening and closing times</li>
+                  <li><strong>Sorted by opening time:</strong> Markets are listed from earliest to latest opening time in your timezone</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-white mb-2">Markets Included</h3>
+                <p>
+                  Sydney, Shanghai, Shenzhen, Hong Kong, Tokyo, Frankfurt, London, New York, and CME (Chicago Mercantile Exchange)
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-white mb-2">Timezone Awareness</h3>
+                <p>
+                  All times are automatically converted to your local browser timezone. You can see what time each market opens and closes in your local time, accounting for daylight saving time differences.
+                </p>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Timeline Container */}
         <div className="relative">
