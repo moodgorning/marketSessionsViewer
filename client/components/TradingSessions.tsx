@@ -50,6 +50,7 @@ const formatTimeInTimezone = (utcMinutes: number, timezone: string): string => {
 export function TradingSessions() {
   const [now, setNow] = useState(new Date());
   const [helpOpen, setHelpOpen] = useState(false);
+  const [tooltipPos, setTooltipPos] = useState({ x: 0, show: false, marketName: '' });
 
   // Update time every second
   useEffect(() => {
