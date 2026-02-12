@@ -1,5 +1,6 @@
-import React, { useMemo, useState, useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
+import React, { useMemo, useState, useEffect } from 'react';
+import { Tooltip } from 'react-tooltip';
+import 'react-tooltip/dist/react-tooltip.css';
 import { markets, getMarketStatus } from '@/data/markets';
 import { isPublicHoliday } from '@/data/holidays';
 import {
@@ -43,29 +44,9 @@ const formatTimeInTimezone = (utcMinutes: number, timezone: string): string => {
   }
 };
 
-interface TooltipState {
-  visible: boolean;
-  x: number;
-  y: number;
-  marketName: string;
-  timezone: string;
-  localOpenTime: number;
-  localCloseTime: number;
-}
-
 export function TradingSessions() {
   const [now, setNow] = useState(new Date());
   const [helpOpen, setHelpOpen] = useState(false);
-  const [tooltip, setTooltip] = useState<TooltipState>({
-    visible: false,
-    x: 0,
-    y: 0,
-    marketName: '',
-    timezone: '',
-    localOpenTime: 0,
-    localCloseTime: 0,
-  });
-  const tooltipTimeoutRef = useRef<NodeJS.Timeout>();
 
   // Update time every second
   useEffect(() => {
@@ -75,42 +56,6 @@ export function TradingSessions() {
 
     return () => clearInterval(interval);
   }, []);
-
-  const handleMarketMouseEnter = (
-    event: React.MouseEvent,
-    market: any,
-    localOpenTime: number,
-    localCloseTime: number
-  ) => {
-    // Clear any pending hide
-    if (tooltipTimeoutRef.current) {
-      clearTimeout(tooltipTimeoutRef.current);
-    }
-
-    setTooltip({
-      visible: true,
-      x: event.clientX,
-      y: event.clientY,
-      marketName: market.name,
-      timezone: market.timezone,
-      localOpenTime,
-      localCloseTime,
-    });
-  };
-
-  const handleMarketMouseMove = (event: React.MouseEvent) => {
-    setTooltip((prev) => ({
-      ...prev,
-      x: event.clientX,
-      y: event.clientY,
-    }));
-  };
-
-  const handleMarketMouseLeave = () => {
-    tooltipTimeoutRef.current = setTimeout(() => {
-      setTooltip((prev) => ({ ...prev, visible: false }));
-    }, 100);
-  };
 
   const currentHourLocal = now.getHours();
   const currentMinLocal = now.getMinutes();
@@ -204,6 +149,8 @@ export function TradingSessions() {
 
   return (
     <div className="w-full bg-gray-900 text-white">
+      <Tooltip id="market-tooltip" className="bg-gray-950 border border-gray-700 text-white text-sm z-50" />
+      
       <div className="max-w-6xl mx-auto px-8 py-16">
         {/* Header */}
         <div className="mb-16 flex items-start justify-between">
@@ -376,45 +323,26 @@ export function TradingSessions() {
                     </span>
                   </div>
 
-                  {/* Timeline bar with Radix Tooltip */}
-                  <Tooltip delayDuration={200}>
-                    <TooltipTrigger asChild>
-                      <div className="flex-1 relative h-7 bg-gray-800/40 rounded border border-gray-700/40 cursor-pointer hover:bg-gray-800/60 transition-colors">
-                        {barStyle.segments.map((segment, idx) => (
-                          <div
-                            key={idx}
-                            className="absolute top-0 bottom-0 rounded"
-                            style={{
-                              left: `${segment.left}%`,
-                              width: `${segment.width}%`,
-                              backgroundColor: market.color,
-                              opacity: status === 'open' ? 0.9 : 0.4,
-                            }}
-                          />
-                        ))}
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent side="top" className="bg-gray-950 border border-gray-700 text-white whitespace-nowrap">
-                      <div className="space-y-2">
-                        <div>
-                          <p className="font-semibold">{market.name}</p>
-                          <p className="text-gray-400 text-xs">{market.timezone}</p>
-                        </div>
-
-                        <div className="border-t border-gray-600 pt-2">
-                          <p className="text-gray-400 text-xs font-semibold mb-1">In {timezoneName}:</p>
-                          <p><span className="text-gray-400">Opens:</span> {formatTime(localOpenTime)}</p>
-                          <p><span className="text-gray-400">Closes:</span> {formatTime(localCloseTime)}</p>
-                        </div>
-
-                        <div className="border-t border-gray-600 pt-2">
-                          <p className="text-gray-400 text-xs font-semibold mb-1">In {market.timezone}:</p>
-                          <p><span className="text-gray-400">Opens:</span> {formatTimeInTimezone(market.openTime, market.timezone)}</p>
-                          <p><span className="text-gray-400">Closes:</span> {formatTimeInTimezone(market.closeTime, market.timezone)}</p>
-                        </div>
-                      </div>
-                    </TooltipContent>
-                  </Tooltip>
+                  {/* Timeline bar with Tooltip */}
+                  <div
+                    data-tooltip-id="market-tooltip"
+                    data-tooltip-content={`<div class="space-y-2"><div><p class="font-semibold">${market.name}</p><p class="text-gray-400 text-xs">${market.timezone}</p></div><div class="border-t border-gray-600 pt-2"><p class="text-gray-400 text-xs font-semibold mb-1">In ${timezoneName}:</p><p><span class="text-gray-400">Opens:</span> ${formatTime(localOpenTime)}</p><p><span class="text-gray-400">Closes:</span> ${formatTime(localCloseTime)}</p></div><div class="border-t border-gray-600 pt-2"><p class="text-gray-400 text-xs font-semibold mb-1">In ${market.timezone}:</p><p><span class="text-gray-400">Opens:</span> ${formatTimeInTimezone(market.openTime, market.timezone)}</p><p><span class="text-gray-400">Closes:</span> ${formatTimeInTimezone(market.closeTime, market.timezone)}</p></div></div>`}
+                    data-tooltip-html
+                    className="flex-1 relative h-7 bg-gray-800/40 rounded border border-gray-700/40 cursor-pointer hover:bg-gray-800/60 transition-colors"
+                  >
+                    {barStyle.segments.map((segment, idx) => (
+                      <div
+                        key={idx}
+                        className="absolute top-0 bottom-0 rounded"
+                        style={{
+                          left: `${segment.left}%`,
+                          width: `${segment.width}%`,
+                          backgroundColor: market.color,
+                          opacity: status === 'open' ? 0.9 : 0.4,
+                        }}
+                      />
+                    ))}
+                  </div>
                 </div>
               );
             })}

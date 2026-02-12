@@ -118,3 +118,15 @@
     white-space: pre;
   }
 }
+
+@layer components {
+  /* react-tooltip styling */
+  .react-tooltip {
+    @apply bg-gray-950 border border-gray-700 text-white text-sm rounded-md px-3 py-2 shadow-lg z-50;
+    max-width: 300px;
+  }
+
+  .react-tooltip.show {
+    @apply opacity-100;
+  }
+}
