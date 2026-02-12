@@ -5,8 +5,9 @@ const hours = Array.from({ length: 24 }, (_, i) => i);
 
 export function TradingSessions() {
   const now = new Date();
-  const currentHourLocal = useMemo(() => now.getHours(), []);
-  const currentMinLocal = useMemo(() => now.getMinutes(), []);
+  const currentHourLocal = now.getHours();
+  const currentMinLocal = now.getMinutes();
+  const currentHourUTC = now.getUTCHours();
   const currentPercentage = ((currentHourLocal * 60 + currentMinLocal) / (24 * 60)) * 100;
 
   // Get local timezone name
@@ -18,14 +19,8 @@ export function TradingSessions() {
     }
   }, []);
 
-  // Get current UTC hour for market status checking
-  const currentHourUTC = useMemo(() => now.getUTCHours(), []);
-
   // Calculate timezone offset in hours
-  const timezoneOffsetHours = useMemo(() => {
-    const utcDate = new Date(now.getTime() + now.getTimezoneOffset() * 60 * 1000);
-    return Math.round((now.getTime() - utcDate.getTime()) / (1000 * 60 * 60));
-  }, []);
+  const timezoneOffsetHours = -now.getTimezoneOffset() / 60;
 
   // Convert UTC hours to local timezone
   const convertUTCToLocal = (utcHour: number) => {
