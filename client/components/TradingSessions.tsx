@@ -4,6 +4,8 @@ import {
   useHover,
   useInteractions,
   FloatingPortal,
+  shift,
+  offset,
 } from '@floating-ui/react';
 import { markets, getMarketStatus } from '@/data/markets';
 import { isPublicHoliday } from '@/data/holidays';
@@ -53,9 +55,11 @@ function MarketBar({ market, status, localOpenTime, localCloseTime, barStyle, ti
   const { refs, floatingStyles, context } = useFloating({
     open: isOpen,
     onOpenChange: setIsOpen,
+    middleware: [offset(10), shift({ padding: 8 })],
+    placement: 'top',
   });
 
-  const hover = useHover(context);
+  const hover = useHover(context, { delay: 200 });
   const { getReferenceProps, getFloatingProps } = useInteractions([hover]);
 
   return (
@@ -85,7 +89,7 @@ function MarketBar({ market, status, localOpenTime, localCloseTime, barStyle, ti
             ref={refs.setFloating}
             style={floatingStyles}
             {...getFloatingProps()}
-            className="bg-gray-950 border border-gray-700 rounded-md px-3 py-2 text-sm text-white z-50 pointer-events-none"
+            className="bg-gray-950 border border-gray-700 rounded-md px-3 py-2 text-sm text-white z-50"
           >
             <div className="space-y-2">
               <div>
