@@ -2,6 +2,7 @@ import React, { useMemo, useState, useEffect, useRef } from 'react';
 import {
   useFloating,
   useHover,
+  useClientPoint,
   useInteractions,
   FloatingPortal,
   shift,
@@ -60,7 +61,8 @@ function MarketBar({ market, status, localOpenTime, localCloseTime, barStyle, ti
   });
 
   const hover = useHover(context, { delay: 200 });
-  const { getReferenceProps, getFloatingProps } = useInteractions([hover]);
+  const clientPoint = useClientPoint(context);
+  const { getReferenceProps, getFloatingProps } = useInteractions([hover, clientPoint]);
 
   return (
     <>
