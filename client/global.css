@@ -120,13 +120,26 @@
 }
 
 @layer components {
-  /* react-tooltip styling */
+  /* react-tooltip base styles */
   .react-tooltip {
-    @apply bg-gray-950 border border-gray-700 text-white text-sm rounded-md px-3 py-2 shadow-lg z-50;
+    position: absolute;
+    z-index: 999;
+    padding: 8px 12px;
+    border-radius: 6px;
+    background-color: rgb(15, 23, 42);
+    border: 1px solid rgb(55, 65, 81);
+    color: rgb(255, 255, 255);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
     max-width: 300px;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
   }
 
   .react-tooltip.show {
-    @apply opacity-100;
+    visibility: visible;
+    opacity: 1;
   }
 }

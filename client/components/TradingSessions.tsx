@@ -1,6 +1,5 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
-import 'react-tooltip/dist/react-tooltip.css';
 import { markets, getMarketStatus } from '@/data/markets';
 import { isPublicHoliday } from '@/data/holidays';
 import {
