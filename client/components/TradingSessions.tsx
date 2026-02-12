@@ -50,7 +50,6 @@ const formatTimeInTimezone = (utcMinutes: number, timezone: string): string => {
 export function TradingSessions() {
   const [now, setNow] = useState(new Date());
   const [helpOpen, setHelpOpen] = useState(false);
-  const [tooltipPos, setTooltipPos] = useState({ x: 0, show: false, marketName: '' });
 
   // Update time every second
   useEffect(() => {
@@ -306,7 +305,7 @@ export function TradingSessions() {
               const barStyle = getBarStyle(localMarket);
 
               return (
-                <div key={market.name} className="flex items-center gap-6 group relative">
+                <div key={market.name} className="flex items-center gap-6 relative">
                   {/* Market name column */}
                   <div className="w-24 flex-shrink-0">
                     <span className="text-sm font-semibold whitespace-nowrap">{market.name}</span>
@@ -325,43 +324,45 @@ export function TradingSessions() {
                     </span>
                   </div>
 
-                  {/* Timeline bar */}
-                  <div className="flex-1 relative h-7 bg-gray-800/40 rounded border border-gray-700/40 cursor-pointer hover:bg-gray-800/60 transition-colors">
-                    {barStyle.segments.map((segment, idx) => (
-                      <div
-                        key={idx}
-                        className="absolute top-0 bottom-0 rounded"
-                        style={{
-                          left: `${segment.left}%`,
-                          width: `${segment.width}%`,
-                          backgroundColor: market.color,
-                          opacity: status === 'open' ? 0.9 : 0.4,
-                        }}
-                      />
-                    ))}
-                  </div>
-
-                  {/* Tooltip - positioned at row level */}
-                  <div className="absolute -top-48 left-1/2 -translate-x-1/2 bg-gray-950 border border-gray-700 rounded-md px-3 py-2 text-sm text-white opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 whitespace-nowrap">
-                    <div className="space-y-2">
-                      <div>
-                        <p className="font-semibold">{market.name}</p>
-                        <p className="text-gray-400 text-xs">{market.timezone}</p>
+                  {/* Timeline bar with Radix Tooltip */}
+                  <Tooltip delayDuration={200}>
+                    <TooltipTrigger asChild>
+                      <div className="flex-1 relative h-7 bg-gray-800/40 rounded border border-gray-700/40 cursor-pointer hover:bg-gray-800/60 transition-colors">
+                        {barStyle.segments.map((segment, idx) => (
+                          <div
+                            key={idx}
+                            className="absolute top-0 bottom-0 rounded"
+                            style={{
+                              left: `${segment.left}%`,
+                              width: `${segment.width}%`,
+                              backgroundColor: market.color,
+                              opacity: status === 'open' ? 0.9 : 0.4,
+                            }}
+                          />
+                        ))}
                       </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="bg-gray-950 border border-gray-700 text-white whitespace-nowrap">
+                      <div className="space-y-2">
+                        <div>
+                          <p className="font-semibold">{market.name}</p>
+                          <p className="text-gray-400 text-xs">{market.timezone}</p>
+                        </div>
 
-                      <div className="border-t border-gray-600 pt-2">
-                        <p className="text-gray-400 text-xs font-semibold mb-1">In {timezoneName}:</p>
-                        <p><span className="text-gray-400">Opens:</span> {formatTime(localOpenTime)}</p>
-                        <p><span className="text-gray-400">Closes:</span> {formatTime(localCloseTime)}</p>
-                      </div>
+                        <div className="border-t border-gray-600 pt-2">
+                          <p className="text-gray-400 text-xs font-semibold mb-1">In {timezoneName}:</p>
+                          <p><span className="text-gray-400">Opens:</span> {formatTime(localOpenTime)}</p>
+                          <p><span className="text-gray-400">Closes:</span> {formatTime(localCloseTime)}</p>
+                        </div>
 
-                      <div className="border-t border-gray-600 pt-2">
-                        <p className="text-gray-400 text-xs font-semibold mb-1">In {market.timezone}:</p>
-                        <p><span className="text-gray-400">Opens:</span> {formatTimeInTimezone(market.openTime, market.timezone)}</p>
-                        <p><span className="text-gray-400">Closes:</span> {formatTimeInTimezone(market.closeTime, market.timezone)}</p>
+                        <div className="border-t border-gray-600 pt-2">
+                          <p className="text-gray-400 text-xs font-semibold mb-1">In {market.timezone}:</p>
+                          <p><span className="text-gray-400">Opens:</span> {formatTimeInTimezone(market.openTime, market.timezone)}</p>
+                          <p><span className="text-gray-400">Closes:</span> {formatTimeInTimezone(market.closeTime, market.timezone)}</p>
+                        </div>
                       </div>
-                    </div>
-                  </div>
+                    </TooltipContent>
+                  </Tooltip>
                 </div>
               );
             })}
