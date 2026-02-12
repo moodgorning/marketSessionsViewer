@@ -213,42 +213,51 @@ export function TradingSessions() {
 
         {/* Timeline Container */}
         <div className="relative">
-          {/* Hour labels - absolutely positioned over timeline (same as vertical lines) */}
-          <div className="mb-6 h-6">
-            {hours.filter(hour => hour % 3 === 0).map((hour) => {
-              const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
-              const period = hour < 12 ? 'AM' : 'PM';
-              const percentageOfTimeline = (hour / 24) * 100;
-              return (
-                <div
-                  key={`label-${hour}`}
-                  className="absolute text-left whitespace-nowrap text-xs font-semibold text-gray-400"
-                  style={{
-                    left: `calc(6rem + 1.5rem + 5rem + 1.5rem + ${percentageOfTimeline}%)`,
-                  }}
-                >
-                  {displayHour} {period}
-                </div>
-              );
-            })}
+          {/* Hour labels - positioned within flex-1 swimlanes container */}
+          <div className="flex gap-6 mb-6 h-6">
+            <div className="w-24 flex-shrink-0" /> {/* Market name column */}
+            <div className="w-20 flex-shrink-0" /> {/* Status column */}
+            <div className="flex-1 relative">
+              {hours.filter(hour => hour % 3 === 0).map((hour) => {
+                const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+                const period = hour < 12 ? 'AM' : 'PM';
+                const percentageOfTimeline = (hour / 24) * 100;
+                return (
+                  <div
+                    key={`label-${hour}`}
+                    className="absolute text-left whitespace-nowrap text-xs font-semibold text-gray-400"
+                    style={{
+                      left: `${percentageOfTimeline}%`,
+                    }}
+                  >
+                    {displayHour} {period}
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
           {/* Markets section */}
           <div className="space-y-6 relative">
-            {/* Vertical separator lines at 3-hour boundaries */}
-            {[0, 3, 6, 9, 12, 15, 18, 21].map((hour) => {
-              const percentageOfTimeline = (hour / 24) * 100;
-              // Position: left columns (14rem) + percentage of timeline
-              return (
-                <div
-                  key={`vline-${hour}`}
-                  className="absolute top-0 bottom-0 w-px bg-gray-700/40 pointer-events-none"
-                  style={{
-                    left: `calc(6rem + 1.5rem + 5rem + 1.5rem + ${percentageOfTimeline}%)`,
-                  }}
-                />
-              );
-            })}
+            {/* Vertical separator lines - positioned within flex-1 swimlanes */}
+            <div className="flex gap-6 absolute top-0 bottom-0 w-full pointer-events-none">
+              <div className="w-24 flex-shrink-0" /> {/* Market name column */}
+              <div className="w-20 flex-shrink-0" /> {/* Status column */}
+              <div className="flex-1 relative">
+                {[0, 3, 6, 9, 12, 15, 18, 21].map((hour) => {
+                  const percentageOfTimeline = (hour / 24) * 100;
+                  return (
+                    <div
+                      key={`vline-${hour}`}
+                      className="absolute top-0 bottom-0 w-px bg-gray-700/40"
+                      style={{
+                        left: `${percentageOfTimeline}%`,
+                      }}
+                    />
+                  );
+                })}
+              </div>
+            </div>
 
             {markets
               .map(market => {
