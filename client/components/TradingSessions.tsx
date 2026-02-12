@@ -295,7 +295,7 @@ export function TradingSessions() {
           <div
             className="absolute w-1 bg-blue-500 pointer-events-none shadow-lg"
             style={{
-              left: `calc(8rem + ${currentPercentage}%)`,
+              left: `calc(14rem + ${currentPercentage}%)`,
               top: '1rem',
               bottom: 0,
             }}
