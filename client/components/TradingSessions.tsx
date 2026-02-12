@@ -8,11 +8,14 @@ import {
 
 const hours = Array.from({ length: 24 }, (_, i) => i);
 
-// Format hour as 12-hour time with AM/PM
-const formatTime = (hour: number): string => {
-  const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
-  const period = hour < 12 ? 'AM' : 'PM';
-  return `${displayHour}:00 ${period}`;
+// Format minutes as 12-hour time with AM/PM
+const formatTime = (minutes: number): string => {
+  const totalMinutes = (minutes % 1440); // Normalize to 24-hour cycle
+  const hours = Math.floor(totalMinutes / 60);
+  const mins = totalMinutes % 60;
+  const displayHour = hours === 0 ? 12 : hours > 12 ? hours - 12 : hours;
+  const period = hours < 12 ? 'AM' : 'PM';
+  return `${displayHour}:${mins.toString().padStart(2, '0')} ${period}`;
 };
 
 export function TradingSessions() {
@@ -30,8 +33,10 @@ export function TradingSessions() {
   const currentHourLocal = now.getHours();
   const currentMinLocal = now.getMinutes();
   const currentSecLocal = now.getSeconds();
+  const currentMinutesLocal = currentHourLocal * 60 + currentMinLocal + currentSecLocal / 60;
   const currentHourUTC = now.getUTCHours();
-  const currentPercentage = ((currentHourLocal * 60 * 60 + currentMinLocal * 60 + currentSecLocal) / (24 * 60 * 60)) * 100;
+  const currentMinutesUTC = now.getUTCHours() * 60 + now.getUTCMinutes() + now.getUTCSeconds() / 60;
+  const currentPercentage = (currentMinutesLocal / (24 * 60)) * 100;
 
   // Get local timezone name
   const timezoneName = useMemo(() => {
@@ -42,26 +47,26 @@ export function TradingSessions() {
     }
   }, []);
 
-  // Calculate timezone offset in hours
-  const timezoneOffsetHours = -now.getTimezoneOffset() / 60;
+  // Calculate timezone offset in minutes
+  const timezoneOffsetMinutes = -now.getTimezoneOffset();
 
-  // Convert UTC hours to local timezone
-  const convertUTCToLocal = (utcHour: number) => {
-    return (utcHour + timezoneOffsetHours + 24) % 24;
+  // Convert UTC minutes to local timezone
+  const convertUTCToLocal = (utcMinutes: number) => {
+    return (utcMinutes + timezoneOffsetMinutes + 24 * 60) % (24 * 60);
   };
 
   const getBarStyle = (market: any) => {
-    const hourWidth = 100 / 24;
+    const minuteWidth = 100 / (24 * 60);
 
     if (market.openTime > market.closeTime) {
-      // Spans midnight (Sydney, Tokyo)
-      const part1Width = (24 - market.openTime) * hourWidth;
-      const part2Width = market.closeTime * hourWidth;
+      // Spans midnight
+      const part1Width = (1440 - market.openTime) * minuteWidth;
+      const part2Width = market.closeTime * minuteWidth;
 
       return {
         segments: [
           {
-            left: market.openTime * hourWidth,
+            left: market.openTime * minuteWidth,
             width: part1Width,
           },
           {
@@ -75,8 +80,8 @@ export function TradingSessions() {
       return {
         segments: [
           {
-            left: market.openTime * hourWidth,
-            width: (market.closeTime - market.openTime) * hourWidth,
+            left: market.openTime * minuteWidth,
+            width: (market.closeTime - market.openTime) * minuteWidth,
           },
         ],
       };
@@ -113,7 +118,7 @@ export function TradingSessions() {
           {/* Markets section */}
           <div className="space-y-6">
             {markets.map((market) => {
-              const status = getMarketStatus(market, currentHourUTC);
+              const status = getMarketStatus(market, currentMinutesUTC);
 
               // Convert market hours to local timezone
               const localOpenTime = convertUTCToLocal(market.openTime);
@@ -163,7 +168,7 @@ export function TradingSessions() {
                     <TooltipContent>
                       <div className="text-sm">
                         <p className="font-semibold">{market.name} {market.timezone}</p>
-                        <p>{formatTime(Math.floor(localOpenTime))} - {formatTime(Math.floor(localCloseTime))}</p>
+                        <p>{formatTime(localOpenTime)} - {formatTime(localCloseTime)}</p>
                       </div>
                     </TooltipContent>
                   </Tooltip>
