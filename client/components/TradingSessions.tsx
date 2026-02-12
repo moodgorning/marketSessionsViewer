@@ -342,7 +342,7 @@ export function TradingSessions() {
                         ))}
                       </div>
                     </TooltipTrigger>
-                    <TooltipContent>
+                    <TooltipContent side="bottom">
                       <div className="text-sm space-y-2">
                         <div>
                           <p className="font-semibold">{market.name}</p>
