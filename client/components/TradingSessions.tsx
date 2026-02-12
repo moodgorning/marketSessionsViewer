@@ -213,20 +213,16 @@ export function TradingSessions() {
 
         {/* Timeline Container */}
         <div className="relative">
-          {/* Hour labels - centered over vertical lines */}
-          <div className="relative mb-6" style={{ marginLeft: 'calc(6rem + 1.5rem + 5rem + 1.5rem)' }}>
+          {/* Hour labels - aligned with timeline bar start (w-24 + gap-6 + w-20 + gap-6 = 14rem) */}
+          <div className="flex text-xs font-semibold text-gray-400 mb-6" style={{ marginLeft: 'calc(6rem + 1.5rem + 5rem + 1.5rem)' }}>
             {hours.filter(hour => hour % 3 === 0).map((hour) => {
               const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
               const period = hour < 12 ? 'AM' : 'PM';
-              const hourPercentage = (hour / 24) * 100;
               return (
                 <div
                   key={`label-${hour}`}
-                  className="absolute text-xs font-semibold text-gray-400 whitespace-nowrap"
-                  style={{
-                    left: `${hourPercentage}%`,
-                    transform: 'translateX(-50%)',
-                  }}
+                  style={{ flex: `0 0 calc(${100 / 8}%)` }}
+                  className="text-center"
                 >
                   {displayHour} {period}
                 </div>
@@ -236,15 +232,15 @@ export function TradingSessions() {
 
           {/* Markets section */}
           <div className="space-y-6 relative">
-            {/* Vertical separator lines at 3-hour intervals (every 12.5%) */}
-            {hours.filter(hour => hour % 3 === 0 && hour !== 0).map((hour) => {
-              const hourPercentage = (hour / 24) * 100;
+            {/* Vertical separator lines at 3-hour intervals aligned with flex items (every 12.5%) */}
+            {hours.filter(hour => hour % 3 === 0).map((hour, index) => {
+              const percentageInTimeline = (index / 8) * 100;
               return (
                 <div
                   key={`vline-${hour}`}
                   className="absolute top-0 bottom-0 w-px bg-gray-700/40 pointer-events-none"
                   style={{
-                    left: `calc(6rem + 1.5rem + 5rem + 1.5rem + ${hourPercentage}%)`,
+                    left: `calc(6rem + 1.5rem + 5rem + 1.5rem + ${percentageInTimeline}%)`,
                   }}
                 />
               );
