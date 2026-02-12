@@ -213,13 +213,11 @@ export function TradingSessions() {
 
         {/* Timeline Container */}
         <div className="relative">
-          {/* Hour labels - flex layout matching timeline sections (8 sections of 12.5% each) */}
-          <div className="flex text-xs font-semibold text-gray-400 mb-6">
+          {/* Hour labels - flex layout matching market rows (gap-6 spacing) */}
+          <div className="flex gap-6 text-xs font-semibold text-gray-400 mb-6">
             <div className="w-24 flex-shrink-0" /> {/* Market name column */}
-            <div className="w-1.5" /> {/* Gap */}
             <div className="w-20 flex-shrink-0" /> {/* Status column */}
-            <div className="w-1.5" /> {/* Gap */}
-            {/* Timeline labels section */}
+            {/* Timeline labels section - flex-1 takes remaining space */}
             <div className="flex-1 flex">
               {hours.filter(hour => hour % 3 === 0).map((hour) => {
                 const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
