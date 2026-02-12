@@ -1,5 +1,10 @@
-import React, { useMemo, useState, useEffect } from 'react';
-import { Tooltip as ReactTooltip } from 'react-tooltip';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
+import {
+  useFloating,
+  useHover,
+  useInteractions,
+  FloatingPortal,
+} from '@floating-ui/react';
 import { markets, getMarketStatus } from '@/data/markets';
 import { isPublicHoliday } from '@/data/holidays';
 import {
@@ -42,6 +47,70 @@ const formatTimeInTimezone = (utcMinutes: number, timezone: string): string => {
     return formatTime(utcMinutes);
   }
 };
+
+function MarketBar({ market, status, localOpenTime, localCloseTime, barStyle, timezoneName }: any) {
+  const [isOpen, setIsOpen] = useState(false);
+  const { refs, floatingStyles, context } = useFloating({
+    open: isOpen,
+    onOpenChange: setIsOpen,
+  });
+
+  const hover = useHover(context);
+  const { getReferenceProps, getFloatingProps } = useInteractions([hover]);
+
+  return (
+    <>
+      <div
+        ref={refs.setReference}
+        {...getReferenceProps()}
+        className="flex-1 relative h-7 bg-gray-800/40 rounded border border-gray-700/40 cursor-pointer hover:bg-gray-800/60 transition-colors"
+      >
+        {barStyle.segments.map((segment: any, idx: number) => (
+          <div
+            key={idx}
+            className="absolute top-0 bottom-0 rounded"
+            style={{
+              left: `${segment.left}%`,
+              width: `${segment.width}%`,
+              backgroundColor: market.color,
+              opacity: status === 'open' ? 0.9 : 0.4,
+            }}
+          />
+        ))}
+      </div>
+
+      {isOpen && (
+        <FloatingPortal>
+          <div
+            ref={refs.setFloating}
+            style={floatingStyles}
+            {...getFloatingProps()}
+            className="bg-gray-950 border border-gray-700 rounded-md px-3 py-2 text-sm text-white z-50 pointer-events-none"
+          >
+            <div className="space-y-2">
+              <div>
+                <p className="font-semibold">{market.name}</p>
+                <p className="text-gray-400 text-xs">{market.timezone}</p>
+              </div>
+
+              <div className="border-t border-gray-600 pt-2">
+                <p className="text-gray-400 text-xs font-semibold mb-1">In {timezoneName}:</p>
+                <p><span className="text-gray-400">Opens:</span> {formatTime(localOpenTime)}</p>
+                <p><span className="text-gray-400">Closes:</span> {formatTime(localCloseTime)}</p>
+              </div>
+
+              <div className="border-t border-gray-600 pt-2">
+                <p className="text-gray-400 text-xs font-semibold mb-1">In {market.timezone}:</p>
+                <p><span className="text-gray-400">Opens:</span> {formatTimeInTimezone(market.openTime, market.timezone)}</p>
+                <p><span className="text-gray-400">Closes:</span> {formatTimeInTimezone(market.closeTime, market.timezone)}</p>
+              </div>
+            </div>
+          </div>
+        </FloatingPortal>
+      )}
+    </>
+  );
+}
 
 export function TradingSessions() {
   const [now, setNow] = useState(new Date());
@@ -148,8 +217,6 @@ export function TradingSessions() {
 
   return (
     <div className="w-full bg-gray-900 text-white">
-      <ReactTooltip id="market-tooltip" place="top" effect="solid" />
-      
       <div className="max-w-6xl mx-auto px-8 py-16">
         {/* Header */}
         <div className="mb-16 flex items-start justify-between">
@@ -322,26 +389,15 @@ export function TradingSessions() {
                     </span>
                   </div>
 
-                  {/* Timeline bar with Tooltip */}
-                  <div
-                    data-tooltip-id="market-tooltip"
-                    data-tooltip-content={`<div style="display: grid; gap: 8px;"><div><p style="font-weight: 600; margin: 0;">${market.name}</p><p style="color: #9ca3af; font-size: 0.75rem; margin: 0;">${market.timezone}</p></div><div style="border-top: 1px solid #4b5563; padding-top: 8px;"><p style="color: #9ca3af; font-size: 0.75rem; font-weight: 600; margin: 0 0 4px 0;">In ${timezoneName}:</p><p style="margin: 0;"><span style="color: #9ca3af;">Opens:</span> ${formatTime(localOpenTime)}</p><p style="margin: 0;"><span style="color: #9ca3af;">Closes:</span> ${formatTime(localCloseTime)}</p></div><div style="border-top: 1px solid #4b5563; padding-top: 8px;"><p style="color: #9ca3af; font-size: 0.75rem; font-weight: 600; margin: 0 0 4px 0;">In ${market.timezone}:</p><p style="margin: 0;"><span style="color: #9ca3af;">Opens:</span> ${formatTimeInTimezone(market.openTime, market.timezone)}</p><p style="margin: 0;"><span style="color: #9ca3af;">Closes:</span> ${formatTimeInTimezone(market.closeTime, market.timezone)}</p></div></div>`}
-                    data-tooltip-html="true"
-                    className="flex-1 relative h-7 bg-gray-800/40 rounded border border-gray-700/40 cursor-pointer hover:bg-gray-800/60 transition-colors"
-                  >
-                    {barStyle.segments.map((segment, idx) => (
-                      <div
-                        key={idx}
-                        className="absolute top-0 bottom-0 rounded"
-                        style={{
-                          left: `${segment.left}%`,
-                          width: `${segment.width}%`,
-                          backgroundColor: market.color,
-                          opacity: status === 'open' ? 0.9 : 0.4,
-                        }}
-                      />
-                    ))}
-                  </div>
+                  {/* Timeline bar with Floating UI Tooltip */}
+                  <MarketBar
+                    market={market}
+                    status={status}
+                    localOpenTime={localOpenTime}
+                    localCloseTime={localCloseTime}
+                    barStyle={barStyle}
+                    timezoneName={timezoneName}
+                  />
                 </div>
               );
             })}
