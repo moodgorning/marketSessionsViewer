@@ -212,7 +212,7 @@ export function TradingSessions() {
         </Dialog>
 
         {/* Timeline Container */}
-        <div className="relative">
+        <div className="relative overflow-hidden">
           {/* Hour labels - absolutely positioned over timeline (same as vertical lines) */}
           <div className="mb-6 h-6">
             {hours.filter(hour => hour % 3 === 0).map((hour, index) => {
@@ -236,7 +236,7 @@ export function TradingSessions() {
           {/* Markets section */}
           <div className="space-y-6 relative">
             {/* Vertical separator lines at 3-hour boundaries (every 12.5%) */}
-            {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((index) => {
+            {[0, 1, 2, 3, 4, 5, 6, 7].map((index) => {
               const percentageOfTimeline = (index / 8) * 100;
               // Position: left columns (14rem) + percentage of timeline
               return (
