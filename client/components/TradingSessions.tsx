@@ -1,7 +1,19 @@
 import React, { useMemo } from 'react';
 import { markets, getMarketStatus } from '@/data/markets';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 const hours = Array.from({ length: 24 }, (_, i) => i);
+
+// Format hour as 12-hour time with AM/PM
+const formatTime = (hour: number): string => {
+  const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+  const period = hour < 12 ? 'AM' : 'PM';
+  return `${displayHour}:00 ${period}`;
+};
 
 export function TradingSessions() {
   const now = new Date();
@@ -118,20 +130,30 @@ export function TradingSessions() {
                   </div>
 
                   {/* Timeline bar */}
-                  <div className="flex-1 relative h-7 bg-gray-800/40 rounded border border-gray-700/40">
-                    {barStyle.segments.map((segment, idx) => (
-                      <div
-                        key={idx}
-                        className="absolute top-0 bottom-0 rounded"
-                        style={{
-                          left: `${segment.left}%`,
-                          width: `${segment.width}%`,
-                          backgroundColor: market.color,
-                          opacity: status === 'open' ? 0.9 : 0.4,
-                        }}
-                      />
-                    ))}
-                  </div>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="flex-1 relative h-7 bg-gray-800/40 rounded border border-gray-700/40 cursor-pointer hover:bg-gray-800/60 transition-colors">
+                        {barStyle.segments.map((segment, idx) => (
+                          <div
+                            key={idx}
+                            className="absolute top-0 bottom-0 rounded"
+                            style={{
+                              left: `${segment.left}%`,
+                              width: `${segment.width}%`,
+                              backgroundColor: market.color,
+                              opacity: status === 'open' ? 0.9 : 0.4,
+                            }}
+                          />
+                        ))}
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <div className="text-sm">
+                        <p className="font-semibold">{market.name} {market.timezone}</p>
+                        <p>{formatTime(Math.floor(localOpenTime))} - {formatTime(Math.floor(localCloseTime))}</p>
+                      </div>
+                    </TooltipContent>
+                  </Tooltip>
                 </div>
               );
             })}
