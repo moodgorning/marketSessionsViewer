@@ -325,44 +325,30 @@ export function TradingSessions() {
                   </div>
 
                   {/* Timeline bar */}
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="flex-1 relative h-7 bg-gray-800/40 rounded border border-gray-700/40 cursor-pointer hover:bg-gray-800/60 transition-colors">
-                        {barStyle.segments.map((segment, idx) => (
-                          <div
-                            key={idx}
-                            className="absolute top-0 bottom-0 rounded"
-                            style={{
-                              left: `${segment.left}%`,
-                              width: `${segment.width}%`,
-                              backgroundColor: market.color,
-                              opacity: status === 'open' ? 0.9 : 0.4,
-                            }}
-                          />
-                        ))}
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom">
-                      <div className="text-sm space-y-2">
-                        <div>
-                          <p className="font-semibold">{market.name}</p>
-                          <p className="text-gray-400 text-xs">{market.timezone}</p>
-                        </div>
+                  <div className="flex-1 relative h-7 bg-gray-800/40 rounded border border-gray-700/40 cursor-pointer hover:bg-gray-800/60 transition-colors group">
+                    {barStyle.segments.map((segment, idx) => (
+                      <div
+                        key={idx}
+                        className="absolute top-0 bottom-0 rounded"
+                        style={{
+                          left: `${segment.left}%`,
+                          width: `${segment.width}%`,
+                          backgroundColor: market.color,
+                          opacity: status === 'open' ? 0.9 : 0.4,
+                        }}
+                      />
+                    ))}
 
-                        <div className="border-t border-gray-600 pt-2">
-                          <p className="text-gray-400 text-xs font-semibold mb-1">In {timezoneName}:</p>
-                          <p><span className="text-gray-400">Opens:</span> {formatTime(localOpenTime)}</p>
-                          <p><span className="text-gray-400">Closes:</span> {formatTime(localCloseTime)}</p>
-                        </div>
-
-                        <div className="border-t border-gray-600 pt-2">
-                          <p className="text-gray-400 text-xs font-semibold mb-1">In {market.timezone}:</p>
-                          <p><span className="text-gray-400">Opens:</span> {formatTimeInTimezone(market.openTime, market.timezone)}</p>
-                          <p><span className="text-gray-400">Closes:</span> {formatTimeInTimezone(market.closeTime, market.timezone)}</p>
-                        </div>
+                    {/* Custom tooltip */}
+                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-gray-950 border border-gray-700 rounded-md px-3 py-2 text-sm text-white whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                      <div className="font-semibold">{market.name}</div>
+                      <div className="text-gray-400 text-xs">{market.timezone}</div>
+                      <div className="border-t border-gray-700 mt-2 pt-2">
+                        <div className="text-gray-300 text-xs"><span className="text-gray-500">Local:</span> {formatTime(localOpenTime)} - {formatTime(localCloseTime)}</div>
+                        <div className="text-gray-300 text-xs"><span className="text-gray-500">Market:</span> {formatTimeInTimezone(market.openTime, market.timezone)} - {formatTimeInTimezone(market.closeTime, market.timezone)}</div>
                       </div>
-                    </TooltipContent>
-                  </Tooltip>
+                    </div>
+                  </div>
                 </div>
               );
             })}
