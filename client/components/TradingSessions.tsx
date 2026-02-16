@@ -152,27 +152,22 @@ export function TradingSessions() {
   // Expressed as: 14rem + dayProgressFraction * 100% = left calculation
   // But since we can't easily do (100% - 14rem) in calc with units, we'll use pixels/rem
   // Position from start of timeline bars (at 14rem): dayProgressFraction * (100% - 14rem)
-  const timelineBarStartRem = 14; // 6 + 1.5 + 5 + 1.5
+  const timelineBarStartRem = 16; // 6 + 1.5 + 7 + 1.5
   const timelineOffsetPercent = (dayProgressFraction * 100);
 
-  // Helper function to check if a specific market is closed (weekend or holiday) using its timezone
-  const isMarketClosed = (marketTimezone: string) => {
+  // Helper function to check why a market is closed using its timezone
+  const getMarketClosureReason = (marketTimezone: string): 'open' | 'weekend' | 'holiday' => {
     try {
-      // Check for weekend
       const formatter = new Intl.DateTimeFormat('en-US', {
         weekday: 'short',
         timeZone: marketTimezone,
       });
       const dayName = formatter.format(now);
-      const isWeekend = dayName === 'Sat' || dayName === 'Sun';
-
-      // Check for public holiday
-      const isHoliday = isPublicHoliday(marketTimezone, now);
-
-      return isWeekend || isHoliday;
+      if (dayName === 'Sat' || dayName === 'Sun') return 'weekend';
+      if (isPublicHoliday(marketTimezone, now)) return 'holiday';
+      return 'open';
     } catch {
-      // If timezone conversion fails, assume it's not closed
-      return false;
+      return 'open';
     }
   };
 
@@ -316,7 +311,7 @@ export function TradingSessions() {
           {/* Hour labels - positioned within flex-1 swimlanes container */}
           <div className="flex gap-6 mb-6 h-6">
             <div className="w-24 flex-shrink-0" /> {/* Market name column */}
-            <div className="w-20 flex-shrink-0" /> {/* Status column */}
+            <div className="w-28 flex-shrink-0" /> {/* Status column */}
             <div className="flex-1 relative">
               {hours.filter(hour => hour % 3 === 0).map((hour) => {
                 const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
@@ -342,7 +337,7 @@ export function TradingSessions() {
             {/* Vertical separator lines - positioned within flex-1 swimlanes */}
             <div className="flex gap-6 absolute top-0 bottom-0 w-full pointer-events-none">
               <div className="w-24 flex-shrink-0" /> {/* Market name column */}
-              <div className="w-20 flex-shrink-0" /> {/* Status column */}
+              <div className="w-28 flex-shrink-0" /> {/* Status column */}
               <div className="flex-1 relative">
                 {[0, 3, 6, 9, 12, 15, 18, 21].map((hour) => {
                   const percentageOfTimeline = (hour / 24) * 100;
@@ -367,9 +362,10 @@ export function TradingSessions() {
               .sort((a, b) => a.localOpenTime - b.localOpenTime)
               .map(({ market }) => {
               let status = getMarketStatus(market, currentMinutesUTC);
+              const closureReason = getMarketClosureReason(market.timezone);
 
               // Override status if it's a weekend or public holiday in that market's timezone
-              if (isMarketClosed(market.timezone)) {
+              if (closureReason !== 'open') {
                 status = 'closed';
               }
 
@@ -388,15 +384,17 @@ export function TradingSessions() {
                   </div>
 
                   {/* Status badge column */}
-                  <div className="w-20 flex-shrink-0">
+                  <div className="w-28 flex-shrink-0">
                     <span
                       className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs font-semibold whitespace-nowrap ${
                         status === 'open'
                           ? 'bg-green-900/40 text-green-400'
-                          : 'bg-red-900/40 text-red-400'
+                          : closureReason === 'holiday'
+                            ? 'bg-amber-900/40 text-amber-400'
+                            : 'bg-red-900/40 text-red-400'
                       }`}
                     >
-                      {status === 'open' ? 'Open' : 'Closed'}
+                      {status === 'open' ? 'Open' : closureReason === 'holiday' ? 'Public Holiday' : 'Closed'}
                     </span>
                   </div>
 
@@ -418,7 +416,7 @@ export function TradingSessions() {
           <div
             className="absolute w-1 bg-blue-500 pointer-events-none shadow-lg"
             style={{
-              left: `calc(${(14 * (1 - dayProgressFraction)).toFixed(3)}rem + ${(dayProgressFraction * 100).toFixed(2)}%)`,
+              left: `calc(${(16 * (1 - dayProgressFraction)).toFixed(3)}rem + ${(dayProgressFraction * 100).toFixed(2)}%)`,
               top: '1rem',
               bottom: 0,
             }}
