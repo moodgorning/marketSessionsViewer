@@ -9,7 +9,7 @@ import {
   offset,
 } from '@floating-ui/react';
 import { markets, getMarketStatus } from '@/data/markets';
-import { isPublicHoliday } from '@/data/holidays';
+import { loadHolidays, isPublicHoliday } from '@/data/holiday-service';
 import {
   Dialog,
   DialogContent,
@@ -121,6 +121,11 @@ function MarketBar({ market, status, localOpenTime, localCloseTime, barStyle, ti
 export function TradingSessions() {
   const [now, setNow] = useState(new Date());
   const [helpOpen, setHelpOpen] = useState(false);
+
+  // Fetch dynamic holiday data on mount
+  useEffect(() => {
+    loadHolidays();
+  }, []);
 
   // Update time every second
   useEffect(() => {
