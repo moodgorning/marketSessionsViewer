@@ -10,6 +10,7 @@ export const marketHolidays: Record<string, string[]> = {
     '2024-02-19', // Presidents Day
     '2024-03-29', // Good Friday
     '2024-05-27', // Memorial Day
+    '2024-06-19', // Juneteenth
     '2024-07-04', // Independence Day
     '2024-09-02', // Labor Day
     '2024-11-28', // Thanksgiving
@@ -19,10 +20,21 @@ export const marketHolidays: Record<string, string[]> = {
     '2025-02-17', // Presidents Day
     '2025-04-18', // Good Friday
     '2025-05-26', // Memorial Day
+    '2025-06-19', // Juneteenth
     '2025-07-04', // Independence Day
     '2025-09-01', // Labor Day
     '2025-11-27', // Thanksgiving
     '2025-12-25', // Christmas
+    '2026-01-01', // New Year's Day
+    '2026-01-19', // MLK Jr. Day
+    '2026-02-16', // Presidents Day
+    '2026-04-03', // Good Friday
+    '2026-05-25', // Memorial Day
+    '2026-06-19', // Juneteenth
+    '2026-07-03', // Independence Day (observed, Jul 4 is Saturday)
+    '2026-09-07', // Labor Day
+    '2026-11-26', // Thanksgiving
+    '2026-12-25', // Christmas
   ],
   'America/Chicago': [
     // CME Holidays (same as US)
@@ -31,6 +43,7 @@ export const marketHolidays: Record<string, string[]> = {
     '2024-02-19', // Presidents Day
     '2024-03-29', // Good Friday
     '2024-05-27', // Memorial Day
+    '2024-06-19', // Juneteenth
     '2024-07-04', // Independence Day
     '2024-09-02', // Labor Day
     '2024-11-28', // Thanksgiving
@@ -40,10 +53,21 @@ export const marketHolidays: Record<string, string[]> = {
     '2025-02-17', // Presidents Day
     '2025-04-18', // Good Friday
     '2025-05-26', // Memorial Day
+    '2025-06-19', // Juneteenth
     '2025-07-04', // Independence Day
     '2025-09-01', // Labor Day
     '2025-11-27', // Thanksgiving
     '2025-12-25', // Christmas
+    '2026-01-01', // New Year's Day
+    '2026-01-19', // MLK Jr. Day
+    '2026-02-16', // Presidents Day
+    '2026-04-03', // Good Friday
+    '2026-05-25', // Memorial Day
+    '2026-06-19', // Juneteenth
+    '2026-07-03', // Independence Day (observed, Jul 4 is Saturday)
+    '2026-09-07', // Labor Day
+    '2026-11-26', // Thanksgiving
+    '2026-12-25', // Christmas
   ],
   'Europe/London': [
     // London Stock Exchange Holidays
@@ -63,6 +87,14 @@ export const marketHolidays: Record<string, string[]> = {
     '2025-08-25', // Summer Bank Holiday
     '2025-12-25', // Christmas
     '2025-12-26', // Boxing Day
+    '2026-01-01', // New Year's Day
+    '2026-04-03', // Good Friday
+    '2026-04-06', // Easter Monday
+    '2026-05-04', // Early May Bank Holiday
+    '2026-05-25', // Spring Bank Holiday
+    '2026-08-31', // Summer Bank Holiday
+    '2026-12-25', // Christmas
+    '2026-12-28', // Boxing Day (observed, Dec 26 is Saturday)
   ],
   'Europe/Berlin': [
     // Frankfurt Stock Exchange Holidays
@@ -82,6 +114,14 @@ export const marketHolidays: Record<string, string[]> = {
     '2025-06-09', // Whit Monday
     '2025-12-25', // Christmas
     '2025-12-26', // Boxing Day
+    '2026-01-01', // New Year's Day
+    '2026-04-03', // Good Friday
+    '2026-04-06', // Easter Monday
+    '2026-05-01', // Labor Day
+    '2026-05-14', // Ascension Day
+    '2026-05-25', // Whit Monday
+    '2026-12-25', // Christmas
+    '2026-12-26', // Boxing Day
   ],
   'Asia/Shanghai': [
     // Shanghai & Shenzhen Stock Exchange Holidays
@@ -133,6 +173,25 @@ export const marketHolidays: Record<string, string[]> = {
     '2025-10-05', // National Day
     '2025-10-06', // National Day
     '2025-10-07', // National Day
+    '2026-01-01', // New Year's Day
+    '2026-02-16', // Chinese New Year
+    '2026-02-17', // Chinese New Year
+    '2026-02-18', // Chinese New Year
+    '2026-02-19', // Chinese New Year
+    '2026-02-20', // Chinese New Year
+    '2026-04-05', // Tomb Sweeping Day
+    '2026-04-06', // Tomb Sweeping Day
+    '2026-05-01', // Labor Day
+    '2026-05-02', // Labor Day
+    '2026-05-03', // Labor Day
+    '2026-05-31', // Dragon Boat Festival
+    '2026-10-01', // National Day
+    '2026-10-02', // National Day
+    '2026-10-03', // National Day
+    '2026-10-04', // National Day
+    '2026-10-05', // National Day
+    '2026-10-06', // National Day
+    '2026-10-07', // National Day
   ],
   'Asia/Hong_Kong': [
     // Hong Kong Stock Exchange Holidays
@@ -162,6 +221,20 @@ export const marketHolidays: Record<string, string[]> = {
     '2025-10-01', // National Day
     '2025-10-11', // Chung Yeung Festival
     '2025-12-25', // Christmas Day
+    '2026-01-01', // New Year's Day
+    '2026-02-17', // Chinese New Year
+    '2026-02-18', // Chinese New Year
+    '2026-02-19', // Chinese New Year
+    '2026-04-03', // Good Friday
+    '2026-04-04', // Easter Saturday
+    '2026-04-06', // Easter Monday
+    '2026-04-05', // Ching Ming Festival
+    '2026-05-01', // Labor Day
+    '2026-05-31', // Dragon Boat Festival (Tuen Ng)
+    '2026-07-01', // HKSAR Establishment Day
+    '2026-10-01', // National Day
+    '2026-10-19', // Chung Yeung Festival
+    '2026-12-25', // Christmas Day
   ],
   'Asia/Tokyo': [
     // Tokyo Stock Exchange Holidays
@@ -203,6 +276,23 @@ export const marketHolidays: Record<string, string[]> = {
     '2025-10-13', // Sports Day
     '2025-11-03', // Culture Day
     '2025-11-23', // Labor Thanksgiving Day
+    '2026-01-01', // New Year's Day
+    '2026-01-12', // Coming of Age Day
+    '2026-02-11', // National Foundation Day
+    '2026-02-23', // Emperor's Birthday
+    '2026-03-20', // Vernal Equinox
+    '2026-04-29', // Showa Day
+    '2026-05-04', // Greenery Day
+    '2026-05-05', // Children's Day
+    '2026-05-06', // Observed Holiday (Constitution Day)
+    '2026-07-20', // Marine Day
+    '2026-08-11', // Mountain Day
+    '2026-09-21', // Respect for the Aged Day
+    '2026-09-22', // Observed Holiday
+    '2026-09-23', // Autumnal Equinox
+    '2026-10-12', // Sports Day
+    '2026-11-03', // Culture Day
+    '2026-11-23', // Labor Thanksgiving Day
   ],
   'Australia/Sydney': [
     // Sydney Stock Exchange Holidays
@@ -218,10 +308,17 @@ export const marketHolidays: Record<string, string[]> = {
     '2025-01-01', // New Year's Day
     '2025-01-27', // Australia Day (observed)
     '2025-04-25', // Anzac Day
-    '2025-04-25', // Anzac Day
     '2025-06-09', // Queen's Birthday
     '2025-12-25', // Christmas
     '2025-12-26', // Boxing Day
+    '2026-01-01', // New Year's Day
+    '2026-01-26', // Australia Day
+    '2026-04-03', // Good Friday
+    '2026-04-04', // Easter Saturday
+    '2026-04-06', // Easter Monday
+    '2026-06-08', // Queen's Birthday
+    '2026-12-25', // Christmas
+    '2026-12-28', // Boxing Day (observed, Dec 26 is Saturday)
   ],
 };
 
