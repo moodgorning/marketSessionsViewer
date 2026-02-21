@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect, useRef } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import {
   useFloating,
   useHover,
@@ -8,7 +8,7 @@ import {
   shift,
   offset,
 } from '@floating-ui/react';
-import { markets, getMarketStatus } from '@/data/markets';
+import { markets, getMarketStatus, getMarketUTCTimes, getWeekendStatus } from '@/data/markets';
 import { loadHolidays, isPublicHoliday } from '@/data/holiday-service';
 import {
   Dialog,
@@ -32,24 +32,6 @@ const formatTime = (minutes: number): string => {
   return `${displayHour}:${mins.toString().padStart(2, '0')} ${period}`;
 };
 
-// Format UTC minutes in a specific timezone
-const formatTimeInTimezone = (utcMinutes: number, timezone: string): string => {
-  try {
-    // Create a date at midnight UTC, then add the minutes
-    const date = new Date('2024-01-01T00:00:00Z');
-    date.setUTCMinutes(date.getUTCMinutes() + utcMinutes);
-
-    const formatter = new Intl.DateTimeFormat('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true,
-      timeZone: timezone,
-    });
-    return formatter.format(date);
-  } catch {
-    return formatTime(utcMinutes);
-  }
-};
 
 function MarketBar({ market, status, localOpenTime, localCloseTime, barStyle, timezoneName }: any) {
   const [isOpen, setIsOpen] = useState(false);
@@ -107,8 +89,8 @@ function MarketBar({ market, status, localOpenTime, localCloseTime, barStyle, ti
 
               <div className="border-t border-gray-600 pt-2">
                 <p className="text-gray-400 text-xs font-semibold mb-1">In {market.timezone}:</p>
-                <p><span className="text-gray-400">Opens:</span> {formatTimeInTimezone(market.openTime, market.timezone)}</p>
-                <p><span className="text-gray-400">Closes:</span> {formatTimeInTimezone(market.closeTime, market.timezone)}</p>
+                <p><span className="text-gray-400">Opens:</span> {formatTime(market.localOpenTime)}</p>
+                <p><span className="text-gray-400">Closes:</span> {formatTime(market.localCloseTime)}</p>
               </div>
             </div>
           </div>
@@ -136,11 +118,7 @@ export function TradingSessions() {
     return () => clearInterval(interval);
   }, []);
 
-  const currentHourLocal = now.getHours();
-  const currentMinLocal = now.getMinutes();
-  const currentSecLocal = now.getSeconds();
-  const currentMinutesLocal = currentHourLocal * 60 + currentMinLocal + currentSecLocal / 60;
-  const currentHourUTC = now.getUTCHours();
+  const currentMinutesLocal = now.getHours() * 60 + now.getMinutes() + now.getSeconds() / 60;
   const currentMinutesUTC = now.getUTCHours() * 60 + now.getUTCMinutes() + now.getUTCSeconds() / 60;
 
   // Calculate position as percentage within the 24-hour day
@@ -152,23 +130,12 @@ export function TradingSessions() {
   // Expressed as: 14rem + dayProgressFraction * 100% = left calculation
   // But since we can't easily do (100% - 14rem) in calc with units, we'll use pixels/rem
   // Position from start of timeline bars (at 14rem): dayProgressFraction * (100% - 14rem)
-  const timelineBarStartRem = 16; // 6 + 1.5 + 7 + 1.5
-  const timelineOffsetPercent = (dayProgressFraction * 100);
-
-  // Helper function to check why a market is closed using its timezone
-  const getMarketClosureReason = (marketTimezone: string): 'open' | 'weekend' | 'holiday' => {
-    try {
-      const formatter = new Intl.DateTimeFormat('en-US', {
-        weekday: 'short',
-        timeZone: marketTimezone,
-      });
-      const dayName = formatter.format(now);
-      if (dayName === 'Sat' || dayName === 'Sun') return 'weekend';
-      if (isPublicHoliday(marketTimezone, now)) return 'holiday';
-      return 'open';
-    } catch {
-      return 'open';
-    }
+  // Helper function to check why a market is closed
+  const getMarketClosureReason = (market: typeof markets[number]): 'open' | 'weekend' | 'holiday' => {
+    const weekendStatus = getWeekendStatus(market, now);
+    if (weekendStatus === 'weekend') return 'weekend';
+    if (isPublicHoliday(market.timezone, now)) return 'holiday';
+    return 'open';
   };
 
   // Get local timezone name
@@ -356,23 +323,24 @@ export function TradingSessions() {
 
             {markets
               .map(market => {
-                const localOpenTime = convertUTCToLocal(market.openTime);
-                return { market, localOpenTime };
+                const { openTime, closeTime } = getMarketUTCTimes(market, now);
+                const localOpenTime = convertUTCToLocal(openTime);
+                return { market, localOpenTime, utcOpen: openTime, utcClose: closeTime };
               })
               .sort((a, b) => a.localOpenTime - b.localOpenTime)
-              .map(({ market }) => {
-              let status = getMarketStatus(market, currentMinutesUTC);
-              const closureReason = getMarketClosureReason(market.timezone);
+              .map(({ market, utcOpen, utcClose }) => {
+              let status = getMarketStatus(utcOpen, utcClose, currentMinutesUTC);
+              const closureReason = getMarketClosureReason(market);
 
               // Override status if it's a weekend or public holiday in that market's timezone
               if (closureReason !== 'open') {
                 status = 'closed';
               }
 
-              // Convert market hours to local timezone
-              const localOpenTime = convertUTCToLocal(market.openTime);
-              const localCloseTime = convertUTCToLocal(market.closeTime);
-              const localMarket = { ...market, openTime: localOpenTime, closeTime: localCloseTime };
+              // Convert market hours to local timezone for display
+              const localOpenTime = convertUTCToLocal(utcOpen);
+              const localCloseTime = convertUTCToLocal(utcClose);
+              const localMarket = { openTime: localOpenTime, closeTime: localCloseTime };
 
               const barStyle = getBarStyle(localMarket);
 
